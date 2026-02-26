@@ -6,3 +6,4 @@ from .link_detection import render as link_render
 from .cyber_report import render as cyber_render
 from .tracking import render as track_render
 from .contact import render as contact_render
+from .admin_view import render as admin_render

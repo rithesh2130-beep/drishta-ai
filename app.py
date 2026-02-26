@@ -2,7 +2,7 @@ import streamlit as st
 
 from utils import load_model
 import styles
-from pages import auth_render, link_render, cyber_render, track_render, contact_render
+from pages import auth_render, link_render, cyber_render, track_render, contact_render, admin_render
 
 st.set_page_config(page_title="DRISHTA AI", layout="wide")
 
@@ -70,7 +70,8 @@ page = st.sidebar.radio(
         "🔗 Fake Link Detection",
         "⚖️ Cyber Crime Report",
         "🔐 Private Case Tracking",
-        "📩 Contact Us"
+        "📩 Contact Us",
+        "📊 Admin Viewer"
     ]
 )
 
@@ -87,6 +88,8 @@ elif page == "🔐 Private Case Tracking":
     track_render()
 elif page == "📩 Contact Us":
     contact_render()
+elif page == "📊 Admin Viewer":
+    admin_render()
 
 # ================= FOOTER =================
 st.markdown("""
