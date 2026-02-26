@@ -19,15 +19,18 @@ def save_case(case):
     file = "cases/cases.json"
 
     if os.path.exists(file):
-        with open(file, "r") as f:
-            data = json.load(f)
+        try:
+            with open(file, "r") as f:
+                data = json.load(f)
+        except json.JSONDecodeError:
+            data = []
     else:
         data = []
 
     data.append(case)
 
     with open(file, "w") as f:
-        json.dump(data, indent=4)
+        json.dump(data, f, indent=4)
 
 
 # simple scanning animation shared across pages
