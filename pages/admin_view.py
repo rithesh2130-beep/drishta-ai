@@ -5,11 +5,18 @@ from utils import safe_load_json
 def render():
     st.title("📊 DRISHTA Admin Data Viewer")
 
-    # simple access control
-    code = st.text_input("Enter admin code", type="password")
-    if code != "RITHESH":
-        if code:
-            st.error("Incorrect code")
+    # basic session-based access control so user must explicitly unlock
+    if "admin_authenticated" not in st.session_state:
+        st.session_state.admin_authenticated = False
+
+    if not st.session_state.admin_authenticated:
+        code = st.text_input("Enter admin code", type="password", key="admin_code")
+        if st.button("Unlock"):
+            if code == "RITHESH":
+                st.session_state.admin_authenticated = True
+            else:
+                st.error("Incorrect code")
+        # stop before rendering any data until correct code entered
         st.stop()
 
     st.warning("Demo-only admin panel (not for production)")
