@@ -5,6 +5,13 @@ from utils import safe_load_json
 def render():
     st.title("📊 DRISHTA Admin Data Viewer")
 
+    # simple access control
+    code = st.text_input("Enter admin code", type="password")
+    if code != "RITHESH":
+        if code:
+            st.error("Incorrect code")
+        st.stop()
+
     st.warning("Demo-only admin panel (not for production)")
 
     # ================= CASES =================
