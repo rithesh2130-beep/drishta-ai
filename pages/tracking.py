@@ -1,7 +1,6 @@
 import streamlit as st
 import os
 import json
-from utils import drishta_scan
 
 
 def render():
@@ -11,15 +10,25 @@ def render():
 
     file = "cases/cases.json"
 
-    if case_input and os.path.exists(file):
+    # Ensure cases directory exists
+    os.makedirs("cases", exist_ok=True)
 
-        drishta_scan()
+    # Create empty cases.json if it doesn't exist
+    if not os.path.exists(file):
+        with open(file, "w") as f:
+            json.dump([], f)
+
+    # Safe loading
+    try:
         with open(file, "r") as f:
             cases = json.load(f)
+    except json.JSONDecodeError:
+        cases = []
 
+    # Search for case if input provided
+    if case_input:
         for case in cases:
             if case["case_id"] == case_input:
-
                 st.success("Case Found")
                 st.write(f"Platform: {case['platform']}")
                 st.write(f"Status: {case['status']}")
