@@ -1,39 +1,52 @@
 import streamlit as st
 import os
-import json
+from utils import safe_load_json
 
 
 def render():
-    st.title("Anonymous Case Tracking")
+    st.title("🔐 Anonymous Case Tracking")
+
+    st.markdown("""
+Enter your **Anonymous Case ID** to privately monitor investigation progress.
+Your identity is never stored or revealed.
+""")
 
     case_input = st.text_input("Enter Case ID")
 
     file = "cases/cases.json"
 
-    # Ensure cases directory exists
+    # Ensure directory exists (cloud-safe)
     os.makedirs("cases", exist_ok=True)
 
-    # Create empty cases.json if it doesn't exist
-    if not os.path.exists(file):
-        with open(file, "w") as f:
-            json.dump([], f)
+    # SAFE JSON LOAD (prevents all deployment crashes)
+    cases = safe_load_json(file)
 
-    # Safe loading
-    try:
-        with open(file, "r") as f:
-            cases = json.load(f)
-    except json.JSONDecodeError:
-        cases = []
-
-    # Search for case if input provided
+    # ===============================
+    # SEARCH CASE
+    # ===============================
     if case_input:
+
+        found = False
+
         for case in cases:
-            if case["case_id"] == case_input:
-                st.success("Case Found")
-                st.write(f"Platform: {case['platform']}")
-                st.write(f"Status: {case['status']}")
-                st.write(f"Submitted: {case['timestamp']}")
+            if case.get("case_id") == case_input:
+
+                found = True
+
+                st.success("✅ Case Found")
+
+                st.write(f"**Platform:** {case.get('platform', 'Unknown')}")
+                st.write(f"**Status:** {case.get('status', 'Under Investigation')}")
+                st.write(f"**Submitted:** {case.get('timestamp', 'N/A')}")
+
                 st.progress(60)
+
+                st.info("""
+🔎 DRISHTA monitoring system is actively tracking harmful media spread
+and coordinating automated reporting workflows.
+""")
+
                 break
-        else:
-            st.error("Invalid Case ID")
+
+        if not found:
+            st.error("❌ Invalid Case ID or case not yet registered.")
